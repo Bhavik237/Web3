@@ -48,3 +48,19 @@ var Assignment = console.log(findPrefixWithZeroAnd100xDev());
 // harkirat => Raman | Rs 100
 // Ram => Ankit | Rs 10
 
+
+console.log("Assignment 3")
+function findPrefixWithZeroAndounces(){
+    let prefix = '0000';
+    let num = 0;
+    while(true){
+        let input = 'harkirat => Raman | Rs 100 Ram => Ankit | Rs 10  ' +num.toString();
+        let hash = crypto.createHash('sha256').update(input).digest('hex');
+        if(hash.startsWith(prefix)){
+            return {input : input , hash : hash};
+        }
+        num++;
+    }
+}
+
+var assignment3= console.log(findPrefixWithZeroAndounces());
