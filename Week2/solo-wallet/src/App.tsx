@@ -1,33 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
+import { Connection, PublicKey, clusterApiUrl, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [balance, setBalance] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const walletAddress = "YourWalletPublicKeyHere"; // Replace with your wallet public key
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const connection = new Connection(clusterApiUrl('mainnet-beta'));
+        const publicKey = new PublicKey(walletAddress);
+        const walletBalance = await connection.getBalance(publicKey);
+        setBalance(walletBalance / LAMPORTS_PER_SOL); // Convert from lamports to SOL
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to retrieve wallet balance:", err);
+        setLoading(false);
+      }
+    };
+
+    fetchBalance();
+  }, [walletAddress]);
 
   return (
     <>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h2>Solana Wallet Balance</h2>
+      {loading ? (
+        <p>Loading...</p>
+      ) : balance !== null ? (
+        <p>Wallet Balance: {balance} SOL</p>
+      ) : (
+        <p>Failed to retrieve balance.</p>
+      )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
     </>
   )
 }
